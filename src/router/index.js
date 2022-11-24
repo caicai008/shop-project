@@ -8,8 +8,16 @@ const router = createRouter({
       component: () => import('@/views/Layout.vue'),
       children: [
         {
-          path: 'home',
+          path: '/',
           component: () => import('@/views/home/index.vue')
+        },
+        {
+          path: '/category/:id',
+          component: () => import('@/views/category/index.vue')
+        },
+        {
+          path: '/category/sub/:id',
+          component: () => import ('@/views/category/sub.vue')
         }
       ]
     }

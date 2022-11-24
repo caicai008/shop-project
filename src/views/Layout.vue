@@ -1,16 +1,29 @@
 <template>
+
     <!-- 一级路由布局容器 -->
-    <nav>顶部通知栏</nav>
-    <header>头部</header>
+    <!-- 顶部导航组件 -->
+    <AppTopnav />
+    <!-- 头部组件 -->
+    <AppHeader />
+    <!-- 吸顶头部 -->
+    <AppHeaderSticky />
     <main>
         <!-- 二级路由挂载点 -->
-        <router-view name="path"></router-view>
+        <router-view></router-view>
     </main>
-    <footer>底部</footer>
+    <!-- 底部组件 -->
+    <AppFooter />
 </template>
 
 <script setup>
+import AppHeader from '../components/app-header.vue';
+import AppTopnav from '../components/app-topnav.vue';
+import AppFooter from '../components/app-footer.vue';
+import { useStore } from 'vuex'
+import AppHeaderSticky from '../components/app-header-sticky.vue';
 
+const store = useStore()
+store.dispatch('category/getList')
 </script>
 
 <style lang="less" scoped>
