@@ -44,7 +44,7 @@ import { onUnmounted, ref, watch } from 'vue';
             clearInterval(timer)
             timer = setInterval(() => {
                 index.value ++
-                if(index.value > props.sliders.length) {
+                if(index.value > (props.sliders.length - 1)) {
                     index.value = 0
                 }
             }, props.duration);
