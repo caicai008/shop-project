@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import 'normalize.css'
 import '@/assets/styles/common.less'
-import UI from '@/views/home/components/library'
+import UI from '@/components/library'
 
 const app = createApp(App)
 
