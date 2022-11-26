@@ -1,6 +1,6 @@
 <template>
     <div class="home-new">
-        <HomePanel title="新鲜好物" subTitle="新鲜出炉 品质靠谱">
+        <HomePanel title="人气好物" subTitle="爆款推荐 不容错过">
             <template #right><XtxMore path="/" /></template>
             <!-- 面板内容 -->
             <div ref="target" style="position: relative;height: 406px;">
@@ -9,33 +9,34 @@
                         <li v-for="item in goods" :key="item.id">
                             <router-link :to="`/product/${item.id}`">
                                 <img :src="item.picture" alt="">
-                                <p class="name ellipsis">{{item.name}}</p>
-                                <p class="price">{{item.price}}</p>
+                                <p class="name">{{item.title}}</p>
+                                <p class="desc">{{item.alt}}</p>
                             </router-link>
                         </li>
                     </ul>
                     <HomeSkeleton v-else bg="#f0f9f4" />
                 </transition>
             </div>
+
         </HomePanel>
     </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import { findNew } from '@/api/home.js'
+import { findHot } from '@/api/home.js'
 import HomePanel from './home-panel.vue';
 import HomeSkeleton from './home-skeleton.vue';
-import { useLazyData } from '../../../hooks';
+import { useLazyData } from '@/hooks/index.js'
 export default {
-    name: "HomeNew",
+    name: "HomeHot",
     components: { HomePanel, HomeSkeleton },
     setup() {
-        // const goods = ref([]);
-        // findNew().then(data => {
+        // findHot().then(data => {
         //     goods.value = data.result;
         // });
-        const { target, result } = useLazyData(findNew)
+        // 调用懒加载方法
+        const {target ,result} = useLazyData(findHot)
         return { goods: result, target };
     },
 }
@@ -63,8 +64,9 @@ export default {
             padding: 12px 30px 0 30px;
             text-align: center;
         }
-        .price {
-                color: #CF4444;
+        .desc {
+                color: #999;
+                font-size: 18px;
             }
     }
 }

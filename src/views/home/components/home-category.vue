@@ -88,7 +88,7 @@
       })
 
       // 获取品牌数据，尽量不用使用async再setup上
-      findBrand().then(data => {
+      findBrand(6).then(data => {
         brand.brands = data.result
       })
 

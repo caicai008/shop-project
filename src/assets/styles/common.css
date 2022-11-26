@@ -87,3 +87,12 @@ ul {
   line-height: 0;
   clear: both;
 }
+.fade-leave-active {
+  position: absolute;
+  width: 100%;
+  transition: opacity 0.5s 0.2s;
+  z-index: 1;
+}
+.fade-leave-to {
+  opacity: 0;
+}
