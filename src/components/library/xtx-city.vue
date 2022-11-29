@@ -6,35 +6,72 @@
         <i class="iconfont icon-angle-down"></i>
       </div>
       <div class="option" v-if="active">
-        <span class="ellipsis" v-for="i in 24" :key="i">北京市</span>
+        <div v-if="isLoading" class="loading"></div>
+        <template v-else>
+            <span class="ellipsis" v-for="item in currList" :key="item.code">{{item.name}}</span>
+        </template>
       </div>
     </div>
   </template>
-  <script>
-  import { ref } from 'vue'
+<script>
+  import { ref, computed } from 'vue'
   import { onClickOutside } from '@vueuse/core'
+  import axios from 'axios'
   export default {
     name: 'XtxCity',
     setup () {
-      // 控制展开收起,默认收起
-      const active = ref(false)
-      const openDialog = () => {
-        active.value = true
-      }
-      const closeDialog = () => {
-        active.value = false
-      }
-      // 切换展开收起
-      const toggleDialog = () => {
-        if (active.value) closeDialog()
-        else openDialog()
-      }
-      // 点击其他位置隐藏
-      const target = ref(null)
-      onClickOutside(target, () => {
-        closeDialog()
-      })
-      return { active, toggleDialog, target }
+        // 控制展开收起,默认收起
+        const active = ref(false)
+        const cityData = ref([])
+        const isLoading = ref(false)
+        const openDialog = () => {
+            active.value = true
+            // 打开组件发起网络请求
+            isLoading.value = true
+            getCityData().then(data => {
+                cityData.value = data
+                // console.log(data);
+                isLoading.value = false
+            })
+        }
+        const closeDialog = () => {
+            active.value = false
+        }
+        // 切换展开收起
+        const toggleDialog = () => {
+            if (active.value) closeDialog()
+            else openDialog()
+        }
+        // 点击其他位置隐藏
+        const target = ref(null)
+        onClickOutside(target, () => {
+            closeDialog()
+        })
+        // 获取城市数据
+        const getCityData = () => {
+            // 这个位置可能有异常操作，封装成promise
+            return new Promise((resolve, rejects) => {
+                if(window.cityData) {
+                    // 有缓存
+                    resolve(window.cityData)
+                } else {
+                    // 无缓存 发请求
+                    const url = 'https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/area.json'
+                    axios.get(url).then(res => {
+                        // 避免重复发起请求
+                        window.cityData = res.data
+                        resolve(res.data)
+                    })
+                }
+            })
+        }
+        // 定义计算属性
+        const currList = computed(() => {
+            const currList = cityData.value
+            // TODO 根据点击的省份城市获取对应的列表
+            return currList
+        })
+      return { active, toggleDialog, target, currList, isLoading }
     }
   }
   </script>
@@ -86,6 +123,11 @@
           background: #f5f5f5;
         }
       }
+      .loading {
+            height: 290px;
+            width: 100%;
+            background: url(../../assets/images/loading.gif) no-repeat center;
+        }
     }
   }
   </style>

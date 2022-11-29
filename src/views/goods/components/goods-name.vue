@@ -12,7 +12,9 @@
       </dl>
       <dl>
         <dt>配送</dt>
-        <dd>至 </dd>
+        <dd>至
+          <XtxCity />
+        </dd>
       </dl>
       <dl>
         <dt>服务</dt>
@@ -31,8 +33,8 @@
     name: 'GoodName',
     props: {
         goods: {
-            type: Array,
-            default: () => []
+            type: Object,
+            default: () => {}
         }
     }
   }
