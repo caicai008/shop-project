@@ -1,29 +1,37 @@
 <template>
     <div class="xtx-city" ref="target">
       <div class="select" @click="toggleDialog" :class="{active}">
-        <span class="placeholder">请选择配送地址</span>
-        <span class="value"></span>
+        <span v-if="!changeResult.fullLocation" class="placeholder">请选择配送地址</span>
+        <span class="value">{{changeResult.fullLocation}}</span>
         <i class="iconfont icon-angle-down"></i>
       </div>
-      <div class="option" v-if="active">
+      <div class="option" v-show="active">
         <div v-if="isLoading" class="loading"></div>
         <template v-else>
-            <span class="ellipsis" v-for="item in currList" :key="item.code">{{item.name}}</span>
+            <span @click="changeItem(item)" class="ellipsis" v-for="item in currList" :key="item.code">{{item.name}}</span>
         </template>
       </div>
     </div>
   </template>
 <script>
-  import { ref, computed } from 'vue'
+  import { ref, computed, reactive } from 'vue'
   import { onClickOutside } from '@vueuse/core'
   import axios from 'axios'
   export default {
     name: 'XtxCity',
-    setup () {
+    props: {
+      fullLocation: {
+        type: String,
+        default: null
+      }
+    },
+    emits: [ 'change' ],
+    setup (props, { emit }) {
         // 控制展开收起,默认收起
         const active = ref(false)
         const cityData = ref([])
         const isLoading = ref(false)
+        // 打开弹层
         const openDialog = () => {
             active.value = true
             // 打开组件发起网络请求
@@ -33,6 +41,10 @@
                 // console.log(data);
                 isLoading.value = false
             })
+            // 清空数据
+            for (const key in changeResult) {
+              changeResult[key] = ''
+            }
         }
         const closeDialog = () => {
             active.value = false
@@ -65,13 +77,54 @@
                 }
             })
         }
-        // 定义计算属性
-        const currList = computed(() => {
-            const currList = cityData.value
+        // 切换城市
+        const changeResult = reactive({
+            provinceCode: '',
+            provinceName: '',
+            cityCode: '',
+            cityName: '',
+            countyCode: '',
+            countyName: '',
+            fullLocation: ''
+        })
+        const changeItem = (item) => {
+          // 省份
+          if(item.level === 0) {
+            changeResult.provinceCode = item.code
+            changeResult.provinceName = item.name
+          }
+          // 市区
+          if(item.level === 1) {
+            changeResult.cityCode = item.code
+            changeResult.cityName = item.name
+          }
+          // 地区
+          if(item.level === 2) {
+            changeResult.countyCode = item.code
+            changeResult.countyName = item.name
+            changeResult.fullLocation = `${changeResult.provinceName} ${changeResult.cityName} ${changeResult.countyName}`
+            closeDialog()
+            emit('change', changeResult)
+          }
+        }
+
+         // 定义计算属性
+         const currList = computed(() => {
             // TODO 根据点击的省份城市获取对应的列表
+            // 省份
+            let currList = cityData.value
+            // 城市
+            if(changeResult.provinceCode) {
+              currList = currList.find(p => p.code === changeResult.provinceCode).areaList
+            }
+            // 地区
+            if(changeResult.cityCode) {
+              currList = currList.find(c => c.code === changeResult.cityCode).areaList
+            }
             return currList
         })
-      return { active, toggleDialog, target, currList, isLoading }
+
+      return { active, toggleDialog, target, currList, isLoading, changeItem, changeResult }
     }
   }
   </script>
