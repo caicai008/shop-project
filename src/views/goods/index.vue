@@ -11,14 +11,24 @@
             <!-- 商品信息 -->
             <div class="goods-info">
                 <div class="media">
+                    <!-- 图片 -->
                     <GoodsImg :images="goods.mainPictures" />
+                    <!-- 销售数据--写死的 -->
                     <GoodsSales />
                 </div>
                 <div class="spec">
+                    <!-- 名字 -->
                     <GoodsName :goods="goods" />
+                    <!-- 规格 -->
+                    <GoodsSku :goods="goods" />
+                    <!-- 数量 -->
+                    <XtxNumbox label="数量" v-model="num" :max="goods.inventory" />
+                    <!-- 按钮 -->
+                    <XtxButton type="primary"  style="margin-top:20px;">加入购物车</XtxButton>
                 </div>
             </div>
             <!-- 同款推荐 -->
+            <GoodsRelevant :goodsId="goods.id" />
             <!-- 商品详情 -->
         </div>
     </div>
@@ -31,9 +41,12 @@ import { findGoods } from '@/api/product.js'
 import GoodsImg from './components/goods-img.vue';
 import GoodsSales from './components/goods-sales.vue';
 import GoodsName from './components/goods-name.vue';
+import GoodsSku from './components/goods-sku.vue';
+import GoodsRelevant from './components/goods-relevant.vue';
 
     const route = useRoute()
     const goods = ref(null)
+    const num = ref(1)
     // 出现路由地址商品ID发生变化，但是不会重新初始化组件
     watch(() => route.params.id, (newVal) => {
         if(newVal && route.path === '/product/' + newVal) {
