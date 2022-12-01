@@ -37,7 +37,7 @@ import { findRelGoods } from '@/api/goods.js'
     },
     setup(props) {
         const sliders = useRelGoodsData(props.goodsId)
-        console.log(sliders);
+        // console.log(sliders);
         return { sliders }
     }
   }

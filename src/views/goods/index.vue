@@ -30,12 +30,27 @@
             <!-- 同款推荐 -->
             <GoodsRelevant :goodsId="goods.id" />
             <!-- 商品详情 -->
+            <div class="goods-footer">
+                <div class="goods-article">
+                    <!-- 商品详情 + 商品评价 -->
+                    <GoodsTabs :goods="goods" />
+                    <!-- 注意事项 -->
+                    <div class="goods-warn"></div>
+                </div>
+                <!-- 24热榜+专题推荐 -->
+                <div class="goods-aside">
+                    <GoodsHot :goodsId="goods.id" :type="1" />
+                    <GoodsHot :goodsId="goods.id" :type="2" />
+                </div>
+            </div>
+            <!-- 注意事项 -->
+            <GoodsWarn />
         </div>
     </div>
 </template>
 
 <script setup>
-import { nextTick, ref, watch } from 'vue';
+import { nextTick, provide, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { findGoods } from '@/api/product.js'
 import GoodsImg from './components/goods-img.vue';
@@ -43,6 +58,9 @@ import GoodsSales from './components/goods-sales.vue';
 import GoodsName from './components/goods-name.vue';
 import GoodsSku from './components/goods-sku.vue';
 import GoodsRelevant from './components/goods-relevant.vue';
+import GoodsTabs from './components/goods-tabs.vue';
+import GoodsHot from './components/goods-hot.vue';
+import GoodsWarn from './components/goods-warn.vue';
 
     const route = useRoute()
     const goods = ref(null)
@@ -61,6 +79,7 @@ import GoodsRelevant from './components/goods-relevant.vue';
         }
     }, { immediate: true})
 
+    provide('goods', goods)
 </script>
 
 <style lang="less" scoped>
@@ -78,4 +97,17 @@ import GoodsRelevant from './components/goods-relevant.vue';
     padding: 30px 30px 30px 0;
   }
 }
+.goods-footer {
+    display: flex;
+    margin-top: 20px;
+    .goods-article {
+    width: 940px;
+    margin-right: 20px;
+    }
+    .goods-aside {
+        width: 280px;
+        min-height: 1000px;
+    }
+}
+
 </style>
